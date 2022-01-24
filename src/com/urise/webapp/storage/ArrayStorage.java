@@ -16,7 +16,7 @@ public class ArrayStorage {
         index = 0;
     }
 
-    public int checkStorage(String uuid) {
+    private int findIndex(String uuid) {
         for (int i = 0; i < index; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
@@ -26,41 +26,43 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        int idxUuid = checkStorage(r.getUuid());
-        if (idxUuid == -1 && index < storage.length) {
-            storage[index] = r;
-            index++;
+        int index = findIndex(r.getUuid());
+        if (index == -1) {
+            if (index < storage.length) {
+                storage[this.index] = r;
+                this.index++;
+            } else {
+                System.out.println("Не возможно добавить в резюме c uuid : " + r.getUuid() + " так как нет места");
+            }
         } else {
-            System.out.println("Не возможно добавить в резюме");
+            System.out.println("Не возможно добавить в резюме c uuid : " + r.getUuid() +
+                    " так такое резюме уже существует");
         }
     }
 
     public Resume get(String uuid) {
-        if (checkStorage(uuid) >= 0) {
-            int idxUuid = checkStorage(uuid);
-            return storage[idxUuid];
+        int index = findIndex(uuid);
+        if (index >= 0) {
+            return storage[index];
         }
-        System.out.println("Такого резюме нет в базе");
+        System.out.println("В базе нет резюме с uuid : " + uuid);
         return null;
     }
 
     public void update(Resume r) {
-        int idxUuid = checkStorage(r.getUuid());
-        if (idxUuid >= 0) {
-            storage[idxUuid] = r;
+        int index = findIndex(r.getUuid());
+        if (index >= 0) {
+            storage[index] = r;
         } else {
-            System.out.println("Такого резюме нет в базе");
+            System.out.println("В базе нет резюме с uuid : " + r.getUuid());
         }
     }
 
     public void delete(String uuid) {
-        int idxUuid = checkStorage(uuid);
-        if (idxUuid >= 0) {
-            while (idxUuid < index - 1) {
-                storage[idxUuid] = storage[idxUuid + 1];
-                idxUuid++;
-            }
-            index--;
+        int index = findIndex(uuid);
+        if (index >= 0) {
+            System.arraycopy(storage, index + 1, storage, index, this.index - 1);
+            this.index--;
         }
     }
 
