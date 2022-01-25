@@ -9,15 +9,15 @@ import java.util.Arrays;
  */
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
-    private int index;
+    private int currentIdx;
 
     public void clear() {
-        Arrays.fill(storage, 0, index, null);
-        index = 0;
+        Arrays.fill(storage, 0, currentIdx, null);
+        currentIdx = 0;
     }
 
     private int findIndex(String uuid) {
-        for (int i = 0; i < index; i++) {
+        for (int i = 0; i < currentIdx; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
@@ -28,15 +28,14 @@ public class ArrayStorage {
     public void save(Resume r) {
         int index = findIndex(r.getUuid());
         if (index == -1) {
-            if (index < storage.length) {
-                storage[this.index] = r;
-                this.index++;
+            if (currentIdx < storage.length) {
+                storage[currentIdx] = r;
+                currentIdx++;
             } else {
-                System.out.println("Не возможно добавить в резюме c uuid : " + r.getUuid() + " так как нет места");
+                System.out.println("Не достаточно места для добавления резюме c uuid : " + r.getUuid());
             }
         } else {
-            System.out.println("Не возможно добавить в резюме c uuid : " + r.getUuid() +
-                    " так такое резюме уже существует");
+            System.out.println("Уже существует резюме c uuid : " + r.getUuid());
         }
     }
 
@@ -61,8 +60,10 @@ public class ArrayStorage {
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            System.arraycopy(storage, index + 1, storage, index, this.index - 1);
-            this.index--;
+            System.arraycopy(storage, index + 1, storage, index, currentIdx - 1);
+            currentIdx--;
+        } else {
+            System.out.println("Ошибка удаления резюме");
         }
     }
 
@@ -70,10 +71,10 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.copyOf(storage, index);
+        return Arrays.copyOf(storage, currentIdx);
     }
 
     public int size() {
-        return index;
+        return currentIdx;
     }
 }
