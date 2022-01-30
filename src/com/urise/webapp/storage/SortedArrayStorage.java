@@ -4,15 +4,14 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-/**
- * Array based storage for Resumes
- */
-public class ArrayStorage extends AbstractArrayStorage {
+public class SortedArrayStorage extends AbstractArrayStorage {
     public void save(Resume r) {
         int index = findIndex(r.getUuid());
-        if (index == -1) {
+        if (index < 0) {
             if (currentIdx < STORAGE_LIMIT) {
-                storage[currentIdx] = r;
+                int position = Math.abs(index) - 1;
+                System.arraycopy(storage, position, storage, position + 1, currentIdx);
+                storage[position] = r;
                 currentIdx++;
             } else {
                 System.out.println("Не достаточно места для добавления резюме c uuid : " + r.getUuid());
@@ -23,12 +22,8 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     protected int findIndex(String uuid) {
-        for (int i = 0; i < currentIdx; i++) {
-            if (storage[i].getUuid().equals(uuid)) {
-                return i;
-            }
-        }
-        return -1;
+        Resume searchKey = new Resume();
+        searchKey.setUuid(uuid);
+        return Arrays.binarySearch(storage, 0, currentIdx, searchKey);
     }
-
 }
