@@ -54,7 +54,6 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-
     public void clear() {
         Arrays.fill(storage, 0, currentIdx, null);
         currentIdx = 0;
