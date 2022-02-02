@@ -10,6 +10,8 @@ public abstract class AbstractArrayStorage implements Storage {
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int currentIdx;
 
+    protected abstract int findIndex(String uuid);
+
     public Resume get(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
@@ -18,6 +20,8 @@ public abstract class AbstractArrayStorage implements Storage {
         System.out.println("В базе нет резюме с uuid : " + uuid);
         return null;
     }
+
+    protected abstract void addResume(Resume r, int index);
 
     public void save(Resume r) {
         int index = findIndex(r.getUuid());
@@ -32,8 +36,6 @@ public abstract class AbstractArrayStorage implements Storage {
             System.out.println("Уже существует резюме c uuid : " + r.getUuid());
         }
     }
-
-    protected abstract void addResume(Resume r, int index);
 
     public void delete(String uuid) {
         int index = findIndex(uuid);
@@ -62,9 +64,6 @@ public abstract class AbstractArrayStorage implements Storage {
     public int size() {
         return currentIdx;
     }
-
-
-    protected abstract int findIndex(String uuid);
 
     /**
      * @return array, contains only Resumes in storage (without null)
