@@ -38,7 +38,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void delete(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            System.arraycopy(storage, index + 1, storage, index, currentIdx - 1);
+            System.arraycopy(storage, index + 1, storage, index, currentIdx - index - 1);
             currentIdx--;
         } else {
             System.out.println("Ошибка удаления резюме");
